@@ -1,7 +1,6 @@
 import { login } from "@/lib/supabase/auth/service";
 import NextAuth, { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
-import GoogleProvider from "next-auth/providers/google";
 import bcrypt from "bcrypt";
 export const authOptions: NextAuthOptions = {
   session: {
@@ -9,7 +8,6 @@ export const authOptions: NextAuthOptions = {
   },
 
   secret: process.env.NEXTAUTH_SECRET,
-
   providers: [
     CredentialsProvider({
       type: "credentials",
@@ -51,8 +49,6 @@ export const authOptions: NextAuthOptions = {
         token.username = user.username;
         token.id = user.id;
       }
-
-      // console.log({ inijwt: token });
 
       return token;
     },
