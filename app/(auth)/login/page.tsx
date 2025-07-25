@@ -1,11 +1,12 @@
 "use client";
 
 import { useSearchParams } from "next/navigation";
-import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import Link from "next/link";
+import useSWR from "swr";
 
+const fetcher = (...args) => fetch(...args).then((res) => res.json());
 export default function LoginPage() {
   const [isError, setIsError] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -16,12 +17,10 @@ export default function LoginPage() {
     e.preventDefault();
     setIsLoading(true);
     try {
-      const res = await signIn("credentials", {
-        redirect: false,
-        email: e.target.email.value,
-        password: e.target.password.value,
-        callbackUrl,
-      });
+      const { data, error } = useSWR(
+        "http://localhost:3000/api/auth/login",
+        fetcher
+      );
       if (!res?.error) {
         push(callbackUrl);
         setIsLoading(false);
