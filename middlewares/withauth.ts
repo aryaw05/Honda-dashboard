@@ -17,10 +17,7 @@ export default function withAuth(
     // cek apakah requireAuth mengandung pathname
     if (requireAuth.includes(pathname)) {
       // ambil token dari next auth
-      const token = await getToken({
-        req,
-        secret: process.env.NEXTAUTH_SECRET,
-      });
+      const token = req.cookies.get("token")?.value;
 
       if (!token) {
         const url = new URL("/login", req.url);
