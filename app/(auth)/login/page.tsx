@@ -3,7 +3,6 @@
 import { useSearchParams } from "next/navigation";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import Link from "next/link";
 import useActionForm from "@/app/hooks/useActionForm";
 
 import Cookies from "js-cookie";
@@ -33,7 +32,9 @@ export default function LoginPage(e) {
       const result = await response.json();
       if (!result.errors) {
         push(callbackUrl);
-        Cookies.set("token", result.data.token);
+        Cookies.set("token", result.data.token, {
+          expires: 0.5,
+        });
         console.log(result);
 
         setIsLoading(false);
@@ -70,9 +71,8 @@ export default function LoginPage(e) {
               onChange={handleChange}
               placeholder="johndoe@gmail"
               name="username"
-              className="w-full p-5 after:appearance-none focus:outline-none active:border-0"
+              className="w-full p-5 after:appearance-none focus:outline border border-gray rounded-lg active:border-0"
             />
-            <hr className="w-full border-2 border-black" />
           </div>
           <div className="w-full">
             <label htmlFor="" className="font-bold">
@@ -84,15 +84,14 @@ export default function LoginPage(e) {
               placeholder="********"
               onChange={handleChange}
               name="password"
-              className="w-full appearance-none p-5 focus:outline-none active:border-0"
+              className="w-full appearance-none border border-gray p-5 focus:outline active:border-0 rounded-lg"
             />
-            <hr className="w-full border-2 border-black" />
           </div>
           <div className="flex w-full flex-col gap-3">
             <button
               disabled={isLoading}
               type="submit"
-              className="w-full bg-black p-3 text-white"
+              className="w-full bg-black p-3 text-white rounded-lg"
             >
               {isLoading ? "Loading..." : "Login"}
             </button>
