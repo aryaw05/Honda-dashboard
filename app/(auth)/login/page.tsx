@@ -16,8 +16,6 @@ export default function LoginPage(e) {
 
   const { formData, handleChange } = useActionForm();
 
-  console.log(formData);
-
   const SubmitLogin = async (e: any) => {
     e.preventDefault();
     setIsLoading(true);
