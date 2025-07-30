@@ -1,4 +1,3 @@
-import { getToken } from "next-auth/jwt";
 import {
   NextFetchEvent,
   NextMiddleware,
@@ -17,9 +16,18 @@ export default function withAuth(
     // cek apakah requireAuth mengandung pathname
     if (requireAuth.includes(pathname)) {
       // ambil token dari next auth
-      const token = req.cookies.get("token")?.value;
 
+      const token = req.cookies.get("token")?.value;
       if (!token) {
+        const url = new URL("/login", req.url);
+        url.searchParams.set("callbackUrl", encodeURI(req.url));
+        return NextResponse.redirect(url);
+      }
+
+      const res = await fetch("http://localhost:3000/api/users/current", {
+        headers: { Authorization: token },
+      });
+      if (!res.ok) {
         const url = new URL("/login", req.url);
         url.searchParams.set("callbackUrl", encodeURI(req.url));
         return NextResponse.redirect(url);

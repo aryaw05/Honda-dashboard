@@ -29,10 +29,10 @@ export default function LoginPage(e) {
       });
       const result = await response.json();
       if (!result.errors) {
-        push(callbackUrl);
         Cookies.set("token", result.data.token, {
           expires: 0.5,
         });
+        push(callbackUrl);
         console.log(result);
 
         setIsLoading(false);
