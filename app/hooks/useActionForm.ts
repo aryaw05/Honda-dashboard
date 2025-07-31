@@ -1,9 +1,11 @@
 import { useState } from "react";
 
-export default function useActionForm(initialValues = {}) {
-  const [formData, setFormData] = useState(initialValues);
+export default function useActionForm<T extends Record<string, any>>(
+  initialValues: T
+) {
+  const [formData, setFormData] = useState<T>(initialValues);
 
-  const handleChange = (e: any) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
