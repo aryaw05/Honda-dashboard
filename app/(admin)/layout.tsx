@@ -3,6 +3,7 @@ import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { Navbar } from "../../components/fragments/navbar";
 import { AppSidebar } from "@/components/fragments/appSideBar";
 import { useState } from "react";
+import { CustomTrigger } from "@/components/fragments/customTrigger";
 
 export default function AdminLayout({
   children,
@@ -14,11 +15,10 @@ export default function AdminLayout({
     <>
       <SidebarProvider open={open} onOpenChange={setOpen}>
         <AppSidebar />
-        <main>
-          {/* <CustomTrigger /> */}
-          <SidebarTrigger />
-          {children}
-        </main>
+        {children}
+        <div className="md:hidden">
+          <CustomTrigger />
+        </div>
       </SidebarProvider>
     </>
   );
