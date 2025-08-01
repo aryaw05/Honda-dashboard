@@ -1,6 +1,5 @@
 import {
   Card,
-  CardAction,
   CardContent,
   CardDescription,
   CardFooter,
@@ -10,12 +9,12 @@ import {
 import Image from "next/image";
 
 export default function MotorCard(props: any) {
-  const { image } = props;
+  const { image, deskripsi, nama_barang, harga } = props;
   return (
-    <Card className="w-[290px] mx-auto cursor-pointer border">
-      <CardHeader>
+    <Card className="w-[290px] mx-auto cursor-pointer border rounded-xl">
+      <CardHeader className="px-0 pt-0">
         <Image
-          className="max-h-30 object-cover rounded-lg"
+          className="max-h-48 object-cover rounded-lg"
           src={`http://localhost:3000/uploads/${image}`}
           alt="Images"
           width={500}
@@ -23,11 +22,11 @@ export default function MotorCard(props: any) {
         />
       </CardHeader>
       <CardContent className="mt-0 ">
-        <p>Motor Garang </p>
-        <CardDescription>Card Description</CardDescription>
+        <p>{nama_barang} </p>
+        <CardDescription>{deskripsi}</CardDescription>
       </CardContent>
       <CardFooter>
-        <p>Card Footer</p>
+        <p>Rp.{harga}</p>
       </CardFooter>
     </Card>
   );
