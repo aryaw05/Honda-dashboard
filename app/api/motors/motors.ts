@@ -15,5 +15,3 @@ export async function getMotors() {
 
   return data;
 }
-
-export async function getImage() {}
