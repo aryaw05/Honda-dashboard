@@ -25,11 +25,10 @@ export default function Category() {
     fetchCategories();
   }, []);
 
-  async function uploadCategory(e: React.FormEvent<HTMLFormElement>) {
+  async function uploadCategory(e: any) {
     e.preventDefault();
     try {
       const result = await addCategory(formData);
-
       return result;
     } catch (err) {
       console.error("Gagal menambahkan data kategori:", err);
@@ -51,7 +50,10 @@ export default function Category() {
               onChange={handleChange}
               name="nama_kategori"
             />
-            <Button className="md:w-1/2 mx-auto text-md py-7">
+            <Button
+              className="md:w-1/2 mx-auto text-md py-7"
+              onClick={(e) => uploadCategory(e)}
+            >
               Add Category
             </Button>
           </div>

@@ -16,7 +16,7 @@ export async function getCategories() {
   return data;
 }
 
-export async function addCategory(formData: any) {
+export async function addCategory(formData: { nama_kategori: string }) {
   const token = Cookies.get("token");
   const result = await fetch("http://localhost:3000/api/kategori", {
     method: "POST",
@@ -24,9 +24,7 @@ export async function addCategory(formData: any) {
       "Content-Type": "application/json",
       Authorization: token || "",
     },
-    body: JSON.stringify({
-      nama_kategori: formData.get("nama_kategori"),
-    }),
+    body: JSON.stringify(formData),
   });
   if (!result.ok) {
     console.error("Gagal menambahkan data kategori:", result.statusText);
