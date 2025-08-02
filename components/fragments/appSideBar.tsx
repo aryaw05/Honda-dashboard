@@ -5,27 +5,35 @@ import {
   SidebarGroup,
   SidebarGroupContent,
   SidebarGroupLabel,
-  SidebarHeader,
   SidebarMenu,
-  SidebarMenuAction,
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
-import { Avatar } from "@radix-ui/react-avatar";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@radix-ui/react-dropdown-menu";
-import { ChevronUp, Plus, ChevronRight } from "lucide-react";
+import { ChevronUp, Plus, ChevronRight, Tag } from "lucide-react";
 import Link from "next/link";
 import CustomAvatar from "./avatar";
-
+import { grotesk } from "@/lib/font";
 const items = [
   {
-    title: "Add Motorcycle",
-    url: "/",
+    title: "Add Motor",
+    url: "/dashboard/motors/add-data",
+    icon: Plus,
+  },
+  {
+    title: "Show Motor",
+    url: "/dashboard/motors/show-data",
+    icon: ChevronUp,
+  },
+  {
+    title: "Category",
+    url: "/dashboard/category",
+    icon: Tag,
   },
 ];
 
@@ -49,7 +57,7 @@ const category = [
 ];
 export function AppSidebar() {
   return (
-    <Sidebar variant="floating">
+    <Sidebar className={grotesk.className}>
       <SidebarContent className="bg-white">
         <SidebarGroup>
           <SidebarGroupLabel className="text-lg text-gray-400 ">
@@ -59,17 +67,19 @@ export function AppSidebar() {
             <SidebarMenu>
               {items.map((item, index) => (
                 <SidebarMenuItem key={index}>
-                  <SidebarMenuButton asChild className="text-xl py-5">
+                  <SidebarMenuButton
+                    asChild
+                    className="text-2xl py-8 px-3 rounded-xl "
+                  >
                     <div className="flex justify-between">
                       <Link href={item.url}>
                         <span>{item.title}</span>
                       </Link>
+                      <span className="flex items-center bg-gray-200 rounded-lg p-2">
+                        <item.icon size={24} />
+                      </span>
                     </div>
                   </SidebarMenuButton>
-                  <SidebarMenuAction>
-                    <Plus />
-                    <span className="sr-only">Add Project</span>
-                  </SidebarMenuAction>
                 </SidebarMenuItem>
               ))}
             </SidebarMenu>
@@ -83,12 +93,17 @@ export function AppSidebar() {
             <SidebarMenu className="gap-5">
               {category.map((item, index) => (
                 <SidebarMenuItem key={index}>
-                  <SidebarMenuButton asChild className="text-xl py-5">
+                  <SidebarMenuButton
+                    asChild
+                    className="text-2xl py-8 px-3 rounded-xl"
+                  >
                     <div className="flex justify-between">
                       <Link href={item.title}>
                         <span>{item.title}</span>
                       </Link>
-                      <item.icon size={80} />
+                      <span className="flex items-center bg-gray-200 rounded-lg p-2">
+                        <item.icon size={24} />
+                      </span>
                     </div>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
