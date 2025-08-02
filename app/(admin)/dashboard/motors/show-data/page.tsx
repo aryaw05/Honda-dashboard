@@ -5,7 +5,6 @@ import { useEffect, useState } from "react";
 import { geist, grotesk, inter } from "@/lib/font";
 import { Motor } from "@/lib/types/motor";
 
-
 export default function Dashboard() {
   const [dataMotor, setDataMotor] = useState([]);
   useEffect(() => {
@@ -23,7 +22,7 @@ export default function Dashboard() {
   }, []);
 
   return (
-    <div className="overflow-hidden mt-10  px-5 py-5 w-full">
+    <div>
       <h1
         className={`${grotesk.className} text-[#1b120e] text-5xl font-bold mb-10`}
       >

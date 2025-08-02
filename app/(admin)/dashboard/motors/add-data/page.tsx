@@ -1,25 +1,18 @@
 "use client";
+import { getCategories } from "@/app/api/category/page";
 import InputData from "@/components/fragments/input";
 import InputSelect from "@/components/fragments/select";
 import TextArea from "@/components/fragments/textArea";
 import { Button } from "@/components/ui/button";
 import { grotesk } from "@/lib/font";
-import Cookies from "js-cookie";
 import { useEffect, useState } from "react";
 
 export default function AddData() {
   const [data, setData] = useState([]);
-  const token = Cookies.get("token");
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const res = await fetch("http://localhost:3000/api/kategori/get", {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: token || "",
-          },
-        });
+        const res = await getCategories();
         const result = await res.json();
         setData(result.data);
         console.log(result.data);
@@ -30,7 +23,7 @@ export default function AddData() {
     fetchCategories();
   }, []);
   return (
-    <div className="overflow-hidden mt-10  px-5 py-5 w-full">
+    <div>
       <h1
         className={`${grotesk.className} text-[#1b120e] text-5xl font-bold text-center mb-20 `}
       >
@@ -49,7 +42,7 @@ export default function AddData() {
           />
 
           <TextArea
-            className="col-span-2"
+            className="col-span-2 flex flex-col gap-3"
             placeholder="Insert Description"
             label="Description"
           />

@@ -1,6 +1,5 @@
 "use client";
-import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
-import { Navbar } from "../../components/fragments/navbar";
+import { SidebarProvider } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/fragments/appSideBar";
 import { useState } from "react";
 import { CustomTrigger } from "@/components/fragments/customTrigger";
@@ -15,7 +14,9 @@ export default function AdminLayout({
     <>
       <SidebarProvider open={open} onOpenChange={setOpen}>
         <AppSidebar />
-        {children}
+        <div className="overflow-hidden mt-10  px-8 py-5 w-full">
+          {children}
+        </div>
         <div className="md:hidden">
           <CustomTrigger />
         </div>
