@@ -5,30 +5,33 @@ import InputData from "@/components/fragments/input";
 import TableComponent from "@/components/fragments/table";
 import { Button } from "@/components/ui/button";
 import { grotesk } from "@/lib/font";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 export default function Category() {
   const { handleChange, formData } = useActionForm({
     nama_kategori: "",
   });
   const [data, setData] = useState([]);
-  useEffect(() => {
-    const fetchCategories = async () => {
-      try {
-        const result = await getCategories();
-        setData(result.data);
-        console.log(result.data);
-      } catch (err) {
-        console.error("Gagal mengambil data motor:", err);
-      }
-    };
-    fetchCategories();
+
+  const fetchCategories = useCallback(async () => {
+    try {
+      const result = await getCategories();
+      setData(result.data);
+      console.log(result.data);
+    } catch (err) {
+      console.error("Failed to fetch categories:", err);
+    }
   }, []);
 
+  useEffect(() => {
+    fetchCategories();
+  }, [fetchCategories]);
   async function uploadCategory(e: any) {
     e.preventDefault();
     try {
-      const result = await addCategory(formData);
+      const result = await addCategory(formData).then(() => {
+        fetchCategories();
+      });
       return result;
     } catch (err) {
       console.error("Gagal menambahkan data kategori:", err);
