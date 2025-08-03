@@ -76,7 +76,7 @@ export function AppSidebar() {
                         <span>{item.title}</span>
                       </Link>
                       <span className="flex items-center bg-gray-200 rounded-lg p-2">
-                        <item.icon size={24} />
+                        <item.icon size={20} />
                       </span>
                     </div>
                   </SidebarMenuButton>
@@ -102,7 +102,7 @@ export function AppSidebar() {
                         <span>{item.title}</span>
                       </Link>
                       <span className="flex items-center bg-gray-200 rounded-lg p-2">
-                        <item.icon size={24} />
+                        <item.icon size={20} />
                       </span>
                     </div>
                   </SidebarMenuButton>
