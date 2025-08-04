@@ -4,37 +4,32 @@ import { useSearchParams } from "next/navigation";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import useActionForm from "@/app/hooks/useActionForm";
-
 import Cookies from "js-cookie";
+import { login } from "@/app/api/users/auth";
 
-export default function LoginPage(e) {
+export default function LoginPage() {
   const [isError, setIsError] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const searchParams = useSearchParams();
   const { push } = useRouter();
   const callbackUrl = searchParams.get("callbackUrl") || "/";
 
-  const { formData, handleChange } = useActionForm();
+  const { formData, handleChange } = useActionForm({
+    username: "",
+    password: "",
+  });
 
-  const SubmitLogin = async (e: any) => {
+  const SubmitLogin = async (e: React.ChangeEvent<HTMLInputElement>) => {
     e.preventDefault();
     setIsLoading(true);
-    try {
-      const response = await fetch(`http://localhost:3000/api/users/login`, {
-        method: "POST",
-        body: JSON.stringify(formData),
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-      const result = await response.json();
-      if (!result.errors) {
-        Cookies.set("token", result.data.token, {
+    try { 
+      const response = await login(formData);
+      if (!response.errors) {
+        Cookies.set("token", response.data.token, {
           expires: 0.5,
         });
         push(callbackUrl);
-        console.log(result);
-
+        console.log(response);
         setIsLoading(false);
       } else {
         setIsError(true);
