@@ -8,4 +8,7 @@ export function mainMiddleware(request: NextRequest) {
 }
 
 // function ini akan dijalankan sebelum semua kode program di eksekusi
-export default withAuth(mainMiddleware, ["/dashboard"]);
+export default withAuth(mainMiddleware, [
+  "/dashboard/motors/add-data",
+  "/dashboard/motors/show-data",
+]);
