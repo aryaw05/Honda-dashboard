@@ -69,14 +69,14 @@ export function AppSidebar() {
                 <SidebarMenuItem key={index}>
                   <SidebarMenuButton
                     asChild
-                    className="text-2xl py-8 px-3 rounded-xl "
+                    className="text-xl py-8 px-3 rounded-xl "
                   >
                     <div className="flex justify-between">
                       <Link href={item.url}>
                         <span>{item.title}</span>
                       </Link>
-                      <span className="flex items-center bg-gray-200 rounded-lg p-2">
-                        <item.icon size={20} />
+                      <span className="flex items-center bg-gray-200 rounded-lg p-2 bg-linear-65 from-red-300 to-red-600 text-white">
+                        <item.icon size={15} />
                       </span>
                     </div>
                   </SidebarMenuButton>
@@ -95,14 +95,14 @@ export function AppSidebar() {
                 <SidebarMenuItem key={index}>
                   <SidebarMenuButton
                     asChild
-                    className="text-2xl py-8 px-3 rounded-xl"
+                    className="text-xl py-8 px-3 rounded-xl"
                   >
                     <div className="flex justify-between">
                       <Link href={item.title}>
                         <span>{item.title}</span>
                       </Link>
-                      <span className="flex items-center bg-gray-200 rounded-lg p-2">
-                        <item.icon size={20} />
+                      <span className="flex items-center bg-gray-200 rounded-lg p-2 bg-linear-65 from-red-300 to-red-600 text-white">
+                        <item.icon size={15} />
                       </span>
                     </div>
                   </SidebarMenuButton>
