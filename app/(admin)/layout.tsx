@@ -14,11 +14,11 @@ export default function AdminLayout({
     <>
       <SidebarProvider open={open} onOpenChange={setOpen}>
         <AppSidebar />
-        <div className="overflow-hidden mt-10  px-8 py-5 w-full">
-          {children}
-        </div>
-        <div className="md:hidden">
-          <CustomTrigger />
+        <div className="w-full">
+          <div className="md:hidden">
+            <CustomTrigger />
+          </div>
+          <div className=" mt-5  px-8 py-10 h-fit w-full">{children}</div>
         </div>
       </SidebarProvider>
     </>
