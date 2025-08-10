@@ -1,7 +1,13 @@
+import { CategoryType } from "@/lib/types/category";
 import { Button } from "../ui/button";
+import { DialogAlert } from "./dialog";
 
-export default function TableComponent(props: any) {
-  const { data, remove } = props;
+export default function TableComponent(props: {
+  data: CategoryType[];
+  remove: (id: number) => void;
+  fetchCategories: () => Promise<void>;
+}) {
+  const { data, remove, fetchCategories } = props;
 
   return (
     <div className="w-full">
@@ -32,12 +38,10 @@ export default function TableComponent(props: any) {
                     <td className="p-4">{item.nama_kategori}</td>
                     <td className="p-4">
                       <div className="flex gap-2">
-                        <Button
-                          variant="outline"
-                          className="rounded-lg px-8 py-6"
-                        >
-                          Edit
-                        </Button>
+                        <DialogAlert
+                          data={item}
+                          fetchCategories={fetchCategories}
+                        />
                         <Button
                           className="bg-red-500 hover:bg-red-600 text-white rounded-lg px-8 py-6"
                           onClick={() => remove(item.id_kategori)}

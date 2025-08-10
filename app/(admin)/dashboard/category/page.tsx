@@ -1,11 +1,17 @@
 "use client";
-import { addCategory, getCategories } from "@/app/api/category/page";
-import useActionForm from "@/app/hooks/useActionForm";
+import {
+  addCategory,
+  deleteCategory,
+  getCategories,
+  updateCategory,
+} from "@/app/api/category/page";
+import useActionForm from "@/hooks/useActionForm";
 import InputData from "@/components/fragments/input";
 import TableComponent from "@/components/fragments/table";
 import { Button } from "@/components/ui/button";
 import { grotesk } from "@/lib/font";
 import { useCallback, useEffect, useState } from "react";
+import { CategoryType } from "@/lib/types/category";
 
 export default function Category() {
   const { handleChange, formData } = useActionForm({
@@ -26,7 +32,7 @@ export default function Category() {
   useEffect(() => {
     fetchCategories();
   }, [fetchCategories]);
-  async function uploadCategory(e: any) {
+  async function uploadCategory(e: React.MouseEvent<HTMLButtonElement>) {
     e.preventDefault();
     try {
       const result = await addCategory(formData).then(() => {
@@ -34,9 +40,20 @@ export default function Category() {
       });
       return result;
     } catch (err) {
-      console.error("Gagal menambahkan data kategori:", err);
+      console.error(err);
     }
   }
+
+  async function handleDelete(id: number) {
+    try {
+      await deleteCategory(id).then(() => {
+        fetchCategories();
+      });
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
   return (
     <div>
       <h1
@@ -44,7 +61,7 @@ export default function Category() {
       >
         Category Dashboard
       </h1>
-      <div className="flex flex-col md:flex-row md:justify-start w-full gap-5 md:gap-10">
+      <div className="flex flex-col md:flex-row md:justify-center w-full gap-5 md:gap-10">
         <div className="md:w-2/6">
           <div className="w-full border px-7 py-15 rounded-2xl flex flex-col gap-8">
             <InputData
@@ -54,7 +71,7 @@ export default function Category() {
               name="nama_kategori"
             />
             <Button
-              className="md:w-1/2 mx-auto text-md py-7"
+              className="md:w-1/2 mx-auto text-md py-7 bg-linear-65 from-red-400 to-red-700 text-white shadow-lg rounded-xl shadow-red-500/30"
               onClick={(e) => uploadCategory(e)}
             >
               Add Category
@@ -62,7 +79,12 @@ export default function Category() {
           </div>
         </div>
         <div className="md:w-3/6">
-          <TableComponent caption="Category List" data={data} />
+          <TableComponent
+            fetchCategories={fetchCategories}
+            onChange={handleChange}
+            data={data}
+            remove={(id: number) => handleDelete(id)}
+          />
         </div>
       </div>
     </div>
