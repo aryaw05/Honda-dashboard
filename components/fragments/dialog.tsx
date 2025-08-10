@@ -43,7 +43,7 @@ export function DialogAlert(props: {
             Edit
           </Button>
         </DialogTrigger>
-        <DialogContent className="sm:max-w-[425px]">
+        <DialogContent className="sm:max-w-[425px] gap-10">
           <DialogHeader>
             <DialogTitle>Edit Category</DialogTitle>
             <DialogDescription>
@@ -63,13 +63,18 @@ export function DialogAlert(props: {
           </div>
           <DialogFooter>
             <DialogClose asChild>
-              <Button variant="outline">Cancel</Button>
+              <Button
+                variant="outline"
+                className="text-md py-4   shadow-md rounded-xl "
+              >
+                Cancel
+              </Button>
             </DialogClose>
             <Button
               type="submit"
               onClick={() => handleUpdate(formData)}
               disabled={!formData.nama_kategori}
-              className="bg-[#1b120e] text-white"
+              className="text-md py-4 bg-linear-65 from-red-400 to-red-700 text-white shadow-md rounded-xl shadow-red-500/30"
             >
               Save changes
             </Button>

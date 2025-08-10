@@ -3,40 +3,28 @@ import {
   addCategory,
   deleteCategory,
   getCategories,
-  updateCategory,
 } from "@/app/api/category/page";
 import useActionForm from "@/hooks/useActionForm";
 import InputData from "@/components/fragments/input";
 import TableComponent from "@/components/fragments/table";
 import { Button } from "@/components/ui/button";
 import { grotesk } from "@/lib/font";
-import { useCallback, useEffect, useState } from "react";
 import { CategoryType } from "@/lib/types/category";
+import useSWR, { mutate } from "swr";
 
 export default function Category() {
   const { handleChange, formData } = useActionForm({
     nama_kategori: "",
   });
-  const [data, setData] = useState([]);
 
-  const fetchCategories = useCallback(async () => {
-    try {
-      const result = await getCategories();
-      setData(result.data);
-      console.log(result.data);
-    } catch (err) {
-      console.error("Failed to fetch categories:", err);
-    }
-  }, []);
+  const { data, isLoading } = useSWR("categories", getCategories);
+  console.log(data);
 
-  useEffect(() => {
-    fetchCategories();
-  }, [fetchCategories]);
   async function uploadCategory(e: React.MouseEvent<HTMLButtonElement>) {
     e.preventDefault();
     try {
       const result = await addCategory(formData).then(() => {
-        fetchCategories();
+        mutate("categories");
       });
       return result;
     } catch (err) {
@@ -47,7 +35,7 @@ export default function Category() {
   async function handleDelete(id: number) {
     try {
       await deleteCategory(id).then(() => {
-        fetchCategories();
+        mutate("categories");
       });
     } catch (error) {
       console.error(error);
@@ -80,8 +68,8 @@ export default function Category() {
         </div>
         <div className="md:w-3/6">
           <TableComponent
-            fetchCategories={fetchCategories}
-            onChange={handleChange}
+            isLoading={isLoading}
+            fetchCategories={() => mutate("categories")}
             data={data}
             remove={(id: number) => handleDelete(id)}
           />

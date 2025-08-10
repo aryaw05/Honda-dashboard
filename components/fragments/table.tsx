@@ -3,11 +3,12 @@ import { Button } from "../ui/button";
 import { DialogAlert } from "./dialog";
 
 export default function TableComponent(props: {
-  data: CategoryType[];
+  data: { data: CategoryType[] };
   remove: (id: number) => void;
   fetchCategories: () => Promise<void>;
+  isLoading?: boolean;
 }) {
-  const { data, remove, fetchCategories } = props;
+  const { data, remove, fetchCategories, isLoading } = props;
 
   return (
     <div className="w-full">
@@ -22,35 +23,44 @@ export default function TableComponent(props: {
               </tr>
             </thead>
             <tbody>
-              {data?.map(
-                (
-                  item: {
-                    id_kategori: number;
-                    nama_kategori: string;
-                  },
-                  index: number
-                ) => (
-                  <tr
-                    key={item.id_kategori}
-                    className="text-lg border-b hover:bg-gray-50"
-                  >
-                    <td className="p-4">{index + 1}</td>
-                    <td className="p-4">{item.nama_kategori}</td>
-                    <td className="p-4">
-                      <div className="flex gap-2">
-                        <DialogAlert
-                          data={item}
-                          fetchCategories={fetchCategories}
-                        />
-                        <Button
-                          className="bg-red-500 hover:bg-red-600 text-white rounded-lg px-8 py-6"
-                          onClick={() => remove(item.id_kategori)}
-                        >
-                          Delete
-                        </Button>
-                      </div>
-                    </td>
-                  </tr>
+              {isLoading ? (
+                <tr>
+                  <td colSpan={3} className="text-center p-4">
+                    Loading...
+                  </td>
+                </tr>
+              ) : (
+                data &&
+                data.data.map(
+                  (
+                    item: {
+                      id_kategori: number;
+                      nama_kategori: string;
+                    },
+                    index: number
+                  ) => (
+                    <tr
+                      key={item.id_kategori}
+                      className="text-lg border-b hover:bg-gray-50"
+                    >
+                      <td className="p-4">{index + 1}</td>
+                      <td className="p-4">{item.nama_kategori}</td>
+                      <td className="p-4">
+                        <div className="flex gap-2">
+                          <DialogAlert
+                            data={item}
+                            fetchCategories={fetchCategories}
+                          />
+                          <Button
+                            className="bg-red-500 hover:bg-red-600 text-white rounded-lg px-8 py-6"
+                            onClick={() => remove(item.id_kategori)}
+                          >
+                            Delete
+                          </Button>
+                        </div>
+                      </td>
+                    </tr>
+                  )
                 )
               )}
             </tbody>

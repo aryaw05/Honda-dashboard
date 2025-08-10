@@ -1,3 +1,5 @@
+"use client";
+
 import {
   Sidebar,
   SidebarContent,
@@ -19,6 +21,9 @@ import { ChevronUp, Plus, ChevronRight, Tag } from "lucide-react";
 import Link from "next/link";
 import CustomAvatar from "./avatar";
 import { grotesk } from "@/lib/font";
+import { getCategories } from "@/app/api/category/page";
+import useSWR from "swr";
+import { CategoryType } from "@/lib/types/category";
 const items = [
   {
     title: "Add Motor",
@@ -55,7 +60,11 @@ const category = [
     icon: ChevronRight,
   },
 ];
+
 export function AppSidebar() {
+  const { data, isLoading } = useSWR("categories", getCategories);
+  console.log(data);
+
   return (
     <Sidebar className={grotesk.className}>
       <SidebarContent className="bg-white">
@@ -91,23 +100,24 @@ export function AppSidebar() {
           </SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu className="gap-5">
-              {category.map((item, index) => (
-                <SidebarMenuItem key={index}>
-                  <SidebarMenuButton
-                    asChild
-                    className="text-xl py-8 px-3 rounded-xl"
-                  >
-                    <div className="flex justify-between">
-                      <Link href={item.title}>
-                        <span>{item.title}</span>
-                      </Link>
-                      <span className="flex items-center bg-gray-200 rounded-lg p-2 bg-linear-65 from-red-300 to-red-600 text-white">
-                        <item.icon size={15} />
-                      </span>
-                    </div>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
+              {data &&
+                data.data.map((item: CategoryType, index: number) => (
+                  <SidebarMenuItem key={index}>
+                    <SidebarMenuButton
+                      asChild
+                      className="text-xl py-8 px-3 rounded-xl"
+                    >
+                      <div className="flex justify-between">
+                        <Link href={item.nama_kategori}>
+                          <span>{item.nama_kategori}</span>
+                        </Link>
+                        <span className="flex items-center bg-gray-200 rounded-lg p-2 bg-linear-65 from-red-300 to-red-600 text-white">
+                          <ChevronRight size={15} />
+                        </span>
+                      </div>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                ))}
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
