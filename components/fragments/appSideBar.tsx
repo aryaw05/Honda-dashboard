@@ -24,6 +24,7 @@ import { grotesk } from "@/lib/font";
 import { getCategories } from "@/app/api/category/page";
 import useSWR from "swr";
 import { CategoryType } from "@/lib/types/category";
+import { getUser } from "@/app/api/users/auth";
 const items = [
   {
     title: "Add Motor",
@@ -42,28 +43,17 @@ const items = [
   },
 ];
 
-const category = [
-  {
-    title: "Matic",
-    icon: ChevronRight,
-  },
-  {
-    title: "Sport",
-    icon: ChevronRight,
-  },
-  {
-    title: "Moped",
-    icon: ChevronRight,
-  },
-  {
-    title: "Sport Naked",
-    icon: ChevronRight,
-  },
-];
-
 export function AppSidebar() {
-  const { data, isLoading } = useSWR("categories", getCategories);
-  console.log(data);
+  // alias destructuring data: categories
+  const { data: categoryData, isLoading: categoryIsLoading } = useSWR(
+    "categories",
+    getCategories
+  );
+
+  const { data: userData, isLoading: userDataIsLoading } = useSWR(
+    "user",
+    getUser
+  );
 
   return (
     <Sidebar className={grotesk.className}>
@@ -100,8 +90,8 @@ export function AppSidebar() {
           </SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu className="gap-5">
-              {data &&
-                data.data.map((item: CategoryType, index: number) => (
+              {categoryData &&
+                categoryData.data.map((item: CategoryType, index: number) => (
                   <SidebarMenuItem key={index}>
                     <SidebarMenuButton
                       asChild
@@ -133,7 +123,8 @@ export function AppSidebar() {
                       "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTNd1pQoLFlD5F2Z1cS13DXlMaJ7Z34eizY7ZDjMGwe4su-IJuMJAScRfQfEX0mGKCa-jw&usqp=CAU"
                     }
                   />
-                  Username
+                  {userData && <span>{userData.data.username}</span>}
+
                   <ChevronUp className="ml-auto" />
                 </SidebarMenuButton>
               </DropdownMenuTrigger>
