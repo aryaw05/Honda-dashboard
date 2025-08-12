@@ -32,3 +32,20 @@ export async function getUser() {
 
   return await response.json();
 }
+
+export async function logout() {
+  const token = Cookies.get("token");
+  const response = await fetch(`http://localhost:3000/api/users/logout`, {
+    method: "DELETE",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: token || "",
+    },
+  });
+
+  if (!response.ok) {
+    throw new Error("Failed to logout");
+  }
+  Cookies.remove("token");
+  return await response.json();
+}

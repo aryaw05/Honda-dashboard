@@ -24,7 +24,8 @@ import { grotesk } from "@/lib/font";
 import { getCategories } from "@/app/api/category/page";
 import useSWR from "swr";
 import { CategoryType } from "@/lib/types/category";
-import { getUser } from "@/app/api/users/auth";
+import { getUser, logout } from "@/app/api/users/auth";
+import { Button } from "../ui/button";
 const items = [
   {
     title: "Add Motor",
@@ -128,15 +129,17 @@ export function AppSidebar() {
                   <ChevronUp className="ml-auto" />
                 </SidebarMenuButton>
               </DropdownMenuTrigger>
-              <DropdownMenuContent
-                side="top"
-                className="w-[--radix-popper-anchor-width]"
-              >
+              <DropdownMenuContent side="top" className="">
                 <DropdownMenuItem>
-                  <span>Account</span>
-                </DropdownMenuItem>
-                <DropdownMenuItem>
-                  <span>Sign out</span>
+                  <Button
+                    onClick={async (e) => {
+                      e.preventDefault();
+                      await logout();
+                      window.location.reload(); 
+                    }}
+                  >
+                    Logout
+                  </Button>
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
