@@ -19,7 +19,7 @@ type FormMotorcycle = {
   gambar_details: File[];
 };
 
-export default function AddData() {
+export default function EditData() {
   const [data, setData] = useState([]);
 
   const { formData, handleChange } = useActionForm<FormMotorcycle>({
@@ -79,7 +79,7 @@ export default function AddData() {
       <h1
         className={`${grotesk.className} text-[#1b120e] text-5xl font-bold text-center mb-20 `}
       >
-        Motorcycle Form Data
+        Motorcycle Data Editing Form
       </h1>
       <MotorFormLayout>
         <InputData
