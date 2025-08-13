@@ -120,3 +120,7 @@
     @apply bg-background text-foreground;
   }
 }
+
+.btn-red-gradient {
+  @apply bg-gradient-to-r from-red-300 to-red-600 text-white;
+}

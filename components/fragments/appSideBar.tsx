@@ -44,6 +44,7 @@ const items = [
   },
 ];
 
+const arr = Array(4).fill(3);
 export function AppSidebar() {
   // alias destructuring data: categories
   const { data: categoryData, isLoading: categoryIsLoading } = useSWR(
@@ -51,10 +52,7 @@ export function AppSidebar() {
     getCategories
   );
 
-  const { data: userData, isLoading: userDataIsLoading } = useSWR(
-    "user",
-    getUser
-  );
+  const { data: userData } = useSWR("user", getUser);
 
   return (
     <Sidebar className={grotesk.className}>
@@ -75,7 +73,7 @@ export function AppSidebar() {
                       <Link href={item.url}>
                         <span>{item.title}</span>
                       </Link>
-                      <span className="flex items-center bg-gray-200 rounded-lg p-2 bg-linear-65 from-red-300 to-red-600 text-white">
+                      <span className="flex items-center bg-gray-200 rounded-lg p-2 btn-red-gradient">
                         <item.icon size={15} />
                       </span>
                     </div>
@@ -91,24 +89,37 @@ export function AppSidebar() {
           </SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu className="gap-5">
-              {categoryData &&
-                categoryData.data.map((item: CategoryType, index: number) => (
-                  <SidebarMenuItem key={index}>
-                    <SidebarMenuButton
-                      asChild
-                      className="text-xl py-8 px-3 rounded-xl"
-                    >
-                      <div className="flex justify-between">
-                        <Link href={item.nama_kategori}>
-                          <span>{item.nama_kategori}</span>
-                        </Link>
-                        <span className="flex items-center bg-gray-200 rounded-lg p-2 bg-linear-65 from-red-300 to-red-600 text-white">
-                          <ChevronRight size={15} />
-                        </span>
-                      </div>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-                ))}
+              {categoryIsLoading
+                ? arr.map((_, index) => (
+                    <SidebarMenuItem key={index}>
+                      <SidebarMenuButton
+                        className="text-xl py-8 px-3 rounded-xl"
+                        disabled
+                      >
+                        <div className="flex justify-between w-full">
+                          <span className="animate-pulse bg-gray-400 w-full h-12 rounded-lg"></span>
+                        </div>
+                      </SidebarMenuButton>
+                    </SidebarMenuItem>
+                  ))
+                : categoryData &&
+                  categoryData.data.map((item: CategoryType, index: number) => (
+                    <SidebarMenuItem key={index}>
+                      <SidebarMenuButton
+                        asChild
+                        className="text-xl py-8 px-3 rounded-xl"
+                      >
+                        <div className="flex justify-between">
+                          <Link href={item.nama_kategori}>
+                            <span>{item.nama_kategori}</span>
+                          </Link>
+                          <span className="flex items-center bg-gray-200 rounded-lg p-2 btn-red-gradient">
+                            <ChevronRight size={15} />
+                          </span>
+                        </div>
+                      </SidebarMenuButton>
+                    </SidebarMenuItem>
+                  ))}
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
@@ -126,16 +137,18 @@ export function AppSidebar() {
                   />
                   {userData && <span>{userData.data.username}</span>}
 
-                  <ChevronUp className="ml-auto" />
+                  <ChevronRight className="ml-auto" />
                 </SidebarMenuButton>
               </DropdownMenuTrigger>
-              <DropdownMenuContent side="top" className="">
+              <DropdownMenuContent side="right" className="">
                 <DropdownMenuItem>
                   <Button
+                    variant={"outline"}
+                    className=" w-full  rounded-md"
                     onClick={async (e) => {
                       e.preventDefault();
                       await logout();
-                      window.location.reload(); 
+                      window.location.reload();
                     }}
                   >
                     Logout
