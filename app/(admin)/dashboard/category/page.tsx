@@ -9,7 +9,6 @@ import InputData from "@/components/fragments/input";
 import TableComponent from "@/components/fragments/table";
 import { Button } from "@/components/ui/button";
 import { grotesk } from "@/lib/font";
-import { CategoryType } from "@/lib/types/category";
 import useSWR, { mutate } from "swr";
 
 export default function Category() {

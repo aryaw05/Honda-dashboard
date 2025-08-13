@@ -1,6 +1,7 @@
+import { Category } from "@/lib/types/category";
 import Cookies from "js-cookie";
+const token = Cookies.get("token");
 export async function getCategories() {
-  const token = Cookies.get("token");
   const result = await fetch("http://localhost:3000/api/kategori/get", {
     method: "GET",
     headers: {
@@ -9,7 +10,7 @@ export async function getCategories() {
     },
   });
   if (!result.ok) {
-    console.error("Gagal mengambil data kategori:", result.statusText);
+    console.error(result.statusText);
   }
   const data = await result.json();
 
@@ -17,7 +18,6 @@ export async function getCategories() {
 }
 
 export async function addCategory(formData: { nama_kategori: string }) {
-  const token = Cookies.get("token");
   const result = await fetch("http://localhost:3000/api/kategori", {
     method: "POST",
     headers: {
@@ -27,9 +27,45 @@ export async function addCategory(formData: { nama_kategori: string }) {
     body: JSON.stringify(formData),
   });
   if (!result.ok) {
-    console.error("Gagal menambahkan data kategori:", result.statusText);
+    console.error(result.statusText);
   }
   const data = await result.json();
 
   return data;
+}
+
+export async function deleteCategory(id: number) {
+  const result = await fetch(
+    `http://localhost:3000/api/kategori/delete/${id}`,
+    {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: token || "",
+      },
+    }
+  );
+  if (!result.ok) {
+    console.error(result.statusText);
+  }
+  const data = await result.json();
+
+  return data;
+}
+
+export async function updateCategory(data: Category) {
+  const result = await fetch(`http://localhost:3000/api/kategori/update`, {
+    method: "PATCH",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: token || "",
+    },
+    body: JSON.stringify(data),
+  });
+  if (!result.ok) {
+    console.error(result.statusText);
+  }
+  const res = await result.json();
+
+  return res;
 }
