@@ -1,26 +1,12 @@
 "use client";
 import { getMotors } from "@/app/api/motors/motors";
 import MotorCard from "@/components/fragments/card";
-import { useEffect, useState } from "react";
-import { geist, grotesk, inter } from "@/lib/font";
+import { grotesk, inter } from "@/lib/font";
 import { Motor } from "@/lib/types/motor";
+import useSWR from "swr";
 
 export default function Dashboard() {
-  const [dataMotor, setDataMotor] = useState([]);
-  useEffect(() => {
-    const fetchMotors = async () => {
-      try {
-        const res = await getMotors();
-        // console.log("DATA MOTOR:", res.data.data);
-        setDataMotor(res.data.data);
-      } catch (err) {
-        console.error("Gagal mengambil data motor:", err);
-      }
-    };
-
-    fetchMotors();
-  }, []);
-
+  const { data, isLoading } = useSWR("motors", getMotors);
   return (
     <div>
       <h1
@@ -30,8 +16,8 @@ export default function Dashboard() {
       </h1>
       <div className={inter.className}>
         <div className="w-full grid md:grid-cols-2 lg:grid-cols-4 grid-cols-1 gap-4 auto-cols-auto grid-flow-row ">
-          {dataMotor &&
-            dataMotor.map((motor: Motor) => {
+          {data &&
+            data.data.data.map((motor: Motor) => {
               return (
                 <MotorCard
                   id_motor={motor.id_motor}
