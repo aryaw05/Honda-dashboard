@@ -12,9 +12,9 @@ import { postMotors } from "@/app/api/motors/motors";
 import MotorFormLayout from "@/components/layouts/formLayout";
 type FormMotorcycle = {
   nama_barang: string;
-  harga: string;
+  harga: number;
   deskripsi: string;
-  id_kategori: string;
+  id_kategori: number | null;
   image_card: File | null;
   gambar_details: File[];
 };
@@ -24,19 +24,20 @@ export default function AddData() {
 
   const { formData, handleChange } = useActionForm<FormMotorcycle>({
     nama_barang: "",
-    harga: "",
+    harga: 0,
     deskripsi: "",
-    id_kategori: "",
+    id_kategori: null,
     image_card: null,
     gambar_details: [],
   });
 
-  const postCategories = useCallback(async () => {
+  const postCategories = async () => {
     const form_data = new FormData();
     if (formData.image_card instanceof File) {
       form_data.append("gambar", formData.image_card);
     }
     if (Array.isArray(formData.gambar_details)) {
+      // form_data.append(`gambar_details`, formData.gambar_details);
       formData.gambar_details.forEach((file) => {
         form_data.append(`gambar_details`, file);
       });
@@ -48,11 +49,10 @@ export default function AddData() {
         nama_barang: formData.nama_barang,
         harga: formData.harga,
         deskripsi: formData.deskripsi,
-        id_kategori: 5, // Assuming a static category ID for now
-        id_user: 153,
+        id_kategori: formData.id_kategori,
       })
     );
-    console.log("Form Data:", form_data.getAll("gambar_details"));
+    console.log("Form Data:", form_data.get("gambar"));
     try {
       const token = Cookies.get("token");
       const result = await postMotors(token || "", form_data);
@@ -60,20 +60,22 @@ export default function AddData() {
     } catch (error) {
       console.error("Gagal tambah data Motor", error);
     }
-  }, []);
+  };
 
   const fetchCategories = useCallback(async () => {
     try {
       const result = await getCategories();
       setData(result.data);
     } catch (err) {
-      console.error("Gagal mengambil data motor:", err);
+      console.error("Gagal mengambil ka motor:", err);
     }
   }, []);
 
   useEffect(() => {
     fetchCategories();
   }, [fetchCategories]);
+  console.log("Form data state:", formData);
+
   return (
     <div>
       <h1
@@ -125,7 +127,7 @@ export default function AddData() {
 
         <InputSelect data={data} onChange={handleChange} name="id_kategori" />
         <Button
-          className="md:col-span-2 mt-10 p-8 md:text-lg rounded-xl"
+          className="md:col-span-2 mt-10 p-8 md:text-lg rounded-xl btn-red-gradient"
           onClick={postCategories}
         >
           Submit
