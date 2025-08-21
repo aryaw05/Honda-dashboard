@@ -26,6 +26,7 @@ import useSWR from "swr";
 import { CategoryType } from "@/lib/types/category";
 import { getUser, logout } from "@/app/api/users/auth";
 import { Button } from "../ui/button";
+import { Skeleton } from "../ui/skeleton";
 const items = [
   {
     title: "Add Motor",
@@ -90,17 +91,10 @@ export function AppSidebar() {
           <SidebarGroupContent>
             <SidebarMenu className="gap-5">
               {categoryIsLoading
-                ? arr.map((_, index) => (
-                    <SidebarMenuItem key={index}>
-                      <SidebarMenuButton
-                        className="text-xl py-8 px-3 rounded-xl"
-                        disabled
-                      >
-                        <div className="flex justify-between w-full">
-                          <span className="animate-pulse bg-gray-400 w-full h-12 rounded-lg"></span>
-                        </div>
-                      </SidebarMenuButton>
-                    </SidebarMenuItem>
+                ? arr.map((_, index: number) => (
+                    <div className="text-xl px-3 rounded-xl" key={index}>
+                      <Skeleton className="w-full h-12" />
+                    </div>
                   ))
                 : categoryData &&
                   categoryData.data.map((item: CategoryType, index: number) => (
