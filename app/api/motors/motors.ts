@@ -9,7 +9,24 @@ export async function getMotors() {
     },
   });
   if (!result.ok) {
-    console.error("Gagal mengambil data motor:", result.statusText);
+    console.error(result.statusText);
+  }
+  const data = await result.json();
+
+  return data;
+}
+
+export async function postMotors(token: string, formData: any) {
+  const result = await fetch("http://localhost:3000/api/motor", {
+    method: "POST",
+    body: formData,
+
+    headers: {
+      Authorization: token || "",
+    },
+  });
+  if (!result.ok) {
+    console.error(result.statusText);
   }
   const data = await result.json();
 
