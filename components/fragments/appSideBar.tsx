@@ -104,7 +104,9 @@ export function AppSidebar() {
                         className="text-xl py-8 px-3 rounded-xl"
                       >
                         <div className="flex justify-between">
-                          <Link href={item.nama_kategori}>
+                          <Link
+                            href={`/dashboard/motors/show-data?id_kategori=${item.id_kategori}`}
+                          >
                             <span>{item.nama_kategori}</span>
                           </Link>
                           <span className="flex items-center bg-gray-200 rounded-lg p-2 btn-red-gradient">

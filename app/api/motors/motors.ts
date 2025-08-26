@@ -1,7 +1,16 @@
 import Cookies from "js-cookie";
-export async function getMotors() {
+export async function getMotors(
+  id_kategori: string,
+  page: string,
+  size: string
+) {
   const token = Cookies.get("token");
-  const result = await fetch("http://localhost:3000/api/motor", {
+  const queryParams = new URLSearchParams({
+    id_kategori: id_kategori,
+    page: page,
+    size: size,
+  });
+  const result = await fetch(`http://localhost:3000/api/motor?${queryParams}`, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
@@ -48,4 +57,39 @@ export async function deleteMotor(id: number) {
   const data = await result.json();
 
   return data;
+}
+
+export async function getMotorById(id: number) {
+  const token = Cookies.get("token");
+  const result = await fetch(`http://localhost:3000/api/motor/${id}`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: token || "",
+    },
+  });
+  if (!result.ok) {
+    console.error(result.statusText);
+  }
+  const data = await result.json();
+
+  return data;
+}
+
+export async function updateMotor(data: any) {
+  const token = Cookies.get("token");
+  const result = await fetch(`http://localhost:3000/api/motor/update`, {
+    method: "PATCH",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: token || "",
+    },
+    body: JSON.stringify(data),
+  });
+  if (!result.ok) {
+    console.error(result.statusText);
+  }
+  const res = await result.json();
+
+  return res;
 }

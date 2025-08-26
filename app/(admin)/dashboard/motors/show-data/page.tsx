@@ -5,9 +5,17 @@ import { grotesk, inter } from "@/lib/font";
 import { Motor } from "@/lib/types/motor";
 import useSWR from "swr";
 import SkeletonLoading from "./skeletonLoading";
+import { useSearchParams } from "next/navigation";
 
 export default function Dashboard() {
-  const { data, isLoading } = useSWR("motors", getMotors);
+  const params = useSearchParams();
+  const id_kategori = params.get("id_kategori") ?? "";
+
+  const { data, isLoading } = useSWR("motors", () =>
+    getMotors(id_kategori, "1", "10")
+  );
+  console.log(data);
+
   return (
     <div>
       <h1
