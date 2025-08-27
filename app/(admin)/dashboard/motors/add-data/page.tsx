@@ -6,10 +6,11 @@ import InputSelect from "@/components/fragments/select";
 import TextArea from "@/components/fragments/textArea";
 import { Button } from "@/components/ui/button";
 import { grotesk } from "@/lib/font";
-import { useCallback, useEffect, useState } from "react";
 import Cookies from "js-cookie";
 import { postMotors } from "@/app/api/motors/motors";
 import MotorFormLayout from "@/components/layouts/formLayout";
+import useSWR from "swr";
+import { useState } from "react";
 type FormMotorcycle = {
   nama_barang: string;
   harga: number;
@@ -20,8 +21,6 @@ type FormMotorcycle = {
 };
 
 export default function AddData() {
-  const [data, setData] = useState([]);
-
   const { formData, handleChange } = useActionForm<FormMotorcycle>({
     nama_barang: "",
     harga: 0,
@@ -30,6 +29,8 @@ export default function AddData() {
     image_card: null,
     gambar_details: [],
   });
+  const [resetKey, setResetKey] = useState(0);
+  const { data: categories } = useSWR("categories", getCategories);
 
   const postCategories = async () => {
     const form_data = new FormData();
@@ -37,7 +38,6 @@ export default function AddData() {
       form_data.append("gambar", formData.image_card);
     }
     if (Array.isArray(formData.gambar_details)) {
-      // form_data.append(`gambar_details`, formData.gambar_details);
       formData.gambar_details.forEach((file) => {
         form_data.append(`gambar_details`, file);
       });
@@ -52,29 +52,20 @@ export default function AddData() {
         id_kategori: formData.id_kategori,
       })
     );
-    console.log("Form Data:", form_data.get("gambar"));
     try {
       const token = Cookies.get("token");
-      const result = await postMotors(token || "", form_data);
-      console.log(result);
+      await postMotors(token || "", form_data);
+      formData.nama_barang = "";
+      formData.harga = 0;
+      formData.deskripsi = "";
+      formData.id_kategori = null;
+      formData.image_card = null;
+      formData.gambar_details = [];
+      setResetKey((prev) => prev + 1);
     } catch (error) {
       console.error("Gagal tambah data Motor", error);
     }
   };
-
-  const fetchCategories = useCallback(async () => {
-    try {
-      const result = await getCategories();
-      setData(result.data);
-    } catch (err) {
-      console.error("Gagal mengambil ka motor:", err);
-    }
-  }, []);
-
-  useEffect(() => {
-    fetchCategories();
-  }, [fetchCategories]);
-  console.log("Form data state:", formData);
 
   return (
     <div>
@@ -83,7 +74,7 @@ export default function AddData() {
       >
         Motorcycle Form Data
       </h1>
-      <MotorFormLayout>
+      <MotorFormLayout key={resetKey}>
         <InputData
           placeholder="Insert MotorCycle Name"
           label="Motorcycle Name"
@@ -125,7 +116,11 @@ export default function AddData() {
           />
         </div>
 
-        <InputSelect data={data} onChange={handleChange} name="id_kategori" />
+        <InputSelect
+          categories={categories}
+          onChange={handleChange}
+          name="id_kategori"
+        />
         <Button
           className="md:col-span-2 mt-10 p-8 md:text-lg rounded-xl btn-red-gradient"
           onClick={postCategories}
