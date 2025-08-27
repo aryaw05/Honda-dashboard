@@ -3,19 +3,19 @@ import { deleteMotor, getMotors } from "@/app/api/motors/motors";
 import MotorCard from "@/components/fragments/card";
 import { grotesk, inter } from "@/lib/font";
 import { Motor } from "@/lib/types/motor";
-import useSWR from "swr";
+import useSWR, { mutate } from "swr";
 import SkeletonLoading from "./skeletonLoading";
 import { useSearchParams } from "next/navigation";
 
 export default function Dashboard() {
   const params = useSearchParams();
   const id_kategori = params.get("id_kategori") ?? "";
+  const size = params.get("size") ?? "10";
+  const page = params.get("page") ?? "1";
 
-  const { data, isLoading } = useSWR("motors", () =>
-    getMotors(id_kategori, "1", "10")
+  const { data, isLoading } = useSWR(["motors", id_kategori, page, size], () =>
+    getMotors(id_kategori, page, size)
   );
-  console.log(data);
-
   return (
     <div>
       <h1
@@ -38,7 +38,11 @@ export default function Dashboard() {
                     deskripsi={motor.deskripsi}
                     nama_barang={motor.nama_barang}
                     harga={motor.harga}
-                    onClick={() => deleteMotor(motor.id_motor)}
+                    onClick={() =>
+                      deleteMotor(motor.id_motor).then(() =>
+                        mutate(["motors", id_kategori, page, size])
+                      )
+                    }
                   />
                 );
               })}

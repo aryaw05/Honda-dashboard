@@ -27,6 +27,7 @@ import { CategoryType } from "@/lib/types/category";
 import { getUser, logout } from "@/app/api/users/auth";
 import { Button } from "../ui/button";
 import { Skeleton } from "../ui/skeleton";
+import { usePathname, useSearchParams } from "next/navigation";
 const items = [
   {
     title: "Add Motor",
@@ -47,7 +48,10 @@ const items = [
 
 const arr = Array(4).fill(3);
 export function AppSidebar() {
-  // alias destructuring data: categories
+  const params = useSearchParams();
+  // console.log(params);
+  const categoryParams = params.get("id_kategori") ?? "";
+
   const { data: categoryData, isLoading: categoryIsLoading } = useSWR(
     "categories",
     getCategories
@@ -103,13 +107,19 @@ export function AppSidebar() {
                         asChild
                         className="text-xl py-8 px-3 rounded-xl"
                       >
-                        <div className="flex justify-between">
+                        <div
+                          className={
+                            categoryParams === item.id_kategori.toString()
+                              ? "flex justify-between bg-gray-200 rounded-lg p-2 bg-gradient-to-r from-red-600 to-red-200 text-white hover:text-white"
+                              : "flex justify-between"
+                          }
+                        >
                           <Link
                             href={`/dashboard/motors/show-data?id_kategori=${item.id_kategori}`}
                           >
                             <span>{item.nama_kategori}</span>
                           </Link>
-                          <span className="flex items-center bg-gray-200 rounded-lg p-2 btn-red-gradient">
+                          <span className="flex items-center">
                             <ChevronRight size={15} />
                           </span>
                         </div>
