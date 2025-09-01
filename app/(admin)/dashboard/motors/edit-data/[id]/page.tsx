@@ -1,43 +1,51 @@
 "use client";
-import { getCategories } from "@/app/api/category/page";
 import useActionForm from "@/hooks/useActionForm";
 import InputData from "@/components/fragments/input";
-import InputSelect from "@/components/fragments/select";
 import TextArea from "@/components/fragments/textArea";
 import { Button } from "@/components/ui/button";
 import { grotesk } from "@/lib/font";
-import { useCallback, useEffect, useState } from "react";
-import Cookies from "js-cookie";
-import { postMotors } from "@/app/api/motors/motors";
+import { useEffect, useState } from "react";
+import {
+  deleteDetailImageCard,
+  getMotorById,
+  updateMotor,
+} from "@/app/api/motors/motors";
 import MotorFormLayout from "@/components/layouts/formLayout";
+import { useParams } from "next/navigation";
+import Image from "next/image";
+import { X } from "lucide-react";
 type FormMotorcycle = {
+  id_motor: string;
   nama_barang: string;
   harga: string;
   deskripsi: string;
-  id_kategori: string;
-  image_card: File | null;
-  gambar_details: File[];
+  gambar_card: File | null;
+  gambarMotors: string[];
+  imageDetailPreview: string[];
 };
 
 export default function EditData() {
-  const [data, setData] = useState([]);
-
-  const { formData, handleChange } = useActionForm<FormMotorcycle>({
-    nama_barang: "",
-    harga: "",
-    deskripsi: "",
-    id_kategori: "",
-    image_card: null,
-    gambar_details: [],
-  });
-
-  const postCategories = useCallback(async () => {
-    const form_data = new FormData();
-    if (formData.image_card instanceof File) {
-      form_data.append("gambar", formData.image_card);
+  const params = useParams<{ id: string }>();
+  const [imageCardPreview, setImageCardPreview] = useState("");
+  const { formData, handleChange, setFormData } = useActionForm<FormMotorcycle>(
+    {
+      id_motor: "",
+      nama_barang: "",
+      harga: "",
+      deskripsi: "",
+      gambar_card: null,
+      gambarMotors: [],
+      imageDetailPreview: [],
     }
-    if (Array.isArray(formData.gambar_details)) {
-      formData.gambar_details.forEach((file) => {
+  );
+
+  const updateMotorData = async () => {
+    const form_data = new FormData();
+    if (formData.gambar_card instanceof File) {
+      form_data.append("gambar", formData.gambar_card);
+    }
+    if (Array.isArray(formData.gambarMotors)) {
+      formData.gambarMotors.forEach((file) => {
         form_data.append(`gambar_details`, file);
       });
     }
@@ -45,35 +53,55 @@ export default function EditData() {
     form_data.append(
       "data",
       JSON.stringify({
+        id_motor: parseInt(params.id || ""),
         nama_barang: formData.nama_barang,
         harga: formData.harga,
         deskripsi: formData.deskripsi,
-        id_kategori: 5, // Assuming a static category ID for now
-        id_user: 153,
       })
     );
-    console.log("Form Data:", form_data.getAll("gambar_details"));
     try {
-      const token = Cookies.get("token");
-      const result = await postMotors(token || "", form_data);
-      console.log(result);
+      await updateMotor(form_data, parseInt(params.id || "")).then((res) => {
+        console.log(res);
+      });
     } catch (error) {
-      console.error("Gagal tambah data Motor", error);
+      console.log(error);
     }
-  }, []);
 
-  const fetchCategories = useCallback(async () => {
-    try {
-      const result = await getCategories();
-      setData(result.data);
-    } catch (err) {
-      console.error("Gagal mengambil data motor:", err);
-    }
-  }, []);
+    console.log(form_data.get("gambar_details"));
+  };
 
   useEffect(() => {
-    fetchCategories();
-  }, [fetchCategories]);
+    if (formData.gambar_card && formData.gambar_card instanceof File) {
+      const reader = new FileReader();
+
+      reader.onload = () => {
+        setImageCardPreview(reader.result as string);
+      };
+      reader.readAsDataURL(formData.gambar_card);
+    }
+  }, [formData.gambar_card]);
+  useEffect(() => {
+    getMotorById(parseInt(params.id || "")).then((res) => {
+      console.log(res);
+      setFormData({
+        ...res.data,
+        imageDetailPreview: res.data.gambarMotors,
+      });
+    });
+  }, [params.id, setFormData]);
+
+  function deleteDetailImage(url_gambar: string) {
+    deleteDetailImageCard(url_gambar).then((res) => {
+      setFormData((prev) => ({
+        ...prev,
+        // membuat array baru yang tidak sama dengan url_gambar ( url yang ingin dihapus)
+        imageDetailPreview: prev.imageDetailPreview.filter(
+          (motor) => motor.url_gambar !== url_gambar
+        ),
+      }));
+    });
+  }
+
   return (
     <div>
       <h1
@@ -86,6 +114,7 @@ export default function EditData() {
           placeholder="Insert MotorCycle Name"
           label="Motorcycle Name"
           onChange={handleChange}
+          value={formData.nama_barang}
           name="nama_barang"
         />
         <InputData
@@ -93,6 +122,7 @@ export default function EditData() {
           label="Motorcycle Price"
           type="number"
           onChange={handleChange}
+          value={formData.harga}
           name="harga"
         />
 
@@ -101,32 +131,66 @@ export default function EditData() {
           placeholder="Insert Description"
           label="Description"
           onChange={handleChange}
+          value={formData.deskripsi}
           name="deskripsi"
         />
-        <div className="flex  flex-col gap-4">
+        <div className="space-y-4">
           <InputData
             placeholder="Choose Image"
             type="file"
             multiple={false}
             onChange={handleChange}
-            name="image_card"
+            name="gambar_card"
             label="Motorcycle Image Card"
           />
+          <Image
+            className="rounded-lg mx-auto"
+            src={
+              `${imageCardPreview}`
+                ? `${imageCardPreview}`
+                : `http://localhost:3000/uploads/${formData.gambar_card}`
+            }
+            width={400}
+            height={400}
+            alt="Motorcycle Image Card"
+          />
+        </div>
 
+        <div className="space-y-4">
           <InputData
             placeholder="Choose Banner Image"
             type="file"
             multiple={true}
             onChange={handleChange}
-            name="gambar_details"
+            name="gambarMotors"
             label="Motorcycle Banner Image"
           />
+          {formData.imageDetailPreview.map((item, index) => (
+            <div key={index} className="relative">
+              <Image
+                className="rounded-lg mx-auto "
+                src={`http://localhost:3000/uploads/${item.url_gambar}`}
+                width={400}
+                height={400}
+                alt="Motorcycle Banner Image"
+              />
+              <Button
+                size="icon"
+                variant="ghost"
+                className="absolute -top-3 -right-4  rounded-full bg-black/60 text-white hover:bg-black/80 hover:text-white"
+                onClick={() => {
+                  deleteDetailImage(item.url_gambar);
+                }}
+              >
+                <X className="h-4 w-4" />
+              </Button>
+            </div>
+          ))}
         </div>
 
-        <InputSelect data={data} onChange={handleChange} name="id_kategori" />
         <Button
           className="md:col-span-2 mt-10 p-8 md:text-lg rounded-xl"
-          onClick={postCategories}
+          onClick={updateMotorData}
         >
           Submit
         </Button>

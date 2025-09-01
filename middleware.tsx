@@ -11,4 +11,5 @@ export function mainMiddleware(request: NextRequest) {
 export default withAuth(mainMiddleware, [
   "/dashboard/motors/add-data",
   "/dashboard/motors/show-data",
+  "/dashboard/motors/edit-data",
 ]);
