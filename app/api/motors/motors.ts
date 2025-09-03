@@ -25,7 +25,8 @@ export async function getMotors(
   return data;
 }
 
-export async function postMotors(token: string, formData: any) {
+export async function postMotors(formData: any) {
+  const token = Cookies.get("token");
   const result = await fetch("http://localhost:3000/api/motor", {
     method: "POST",
     body: formData,
@@ -76,16 +77,38 @@ export async function getMotorById(id: number) {
   return data;
 }
 
-export async function updateMotor(data: any) {
+export async function updateMotor(data: any, motorId: number) {
   const token = Cookies.get("token");
-  const result = await fetch(`http://localhost:3000/api/motor/update`, {
-    method: "PATCH",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: token || "",
-    },
-    body: JSON.stringify(data),
-  });
+  const result = await fetch(
+    `http://localhost:3000/api/motor/update/${motorId}`,
+    {
+      method: "PATCH",
+      headers: {
+        Authorization: token || "",
+      },
+      body: data,
+    }
+  );
+  if (!result.ok) {
+    console.error(result.statusText);
+  }
+  const res = await result.json();
+
+  return res;
+}
+
+export async function deleteDetailImageCard(imageUrl: string) {
+  const token = Cookies.get("token");
+  const result = await fetch(
+    `http://localhost:3000/api/motor/delete-image-details/${imageUrl}`,
+    {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: token || "",
+      },
+    }
+  );
   if (!result.ok) {
     console.error(result.statusText);
   }

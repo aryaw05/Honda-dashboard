@@ -53,8 +53,7 @@ export default function AddData() {
       })
     );
     try {
-      const token = Cookies.get("token");
-      await postMotors(token || "", form_data);
+      await postMotors(form_data);
       formData.nama_barang = "";
       formData.harga = 0;
       formData.deskripsi = "";
